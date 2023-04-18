@@ -1,20 +1,29 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
 
 const routes = [
   {
     path: "/",
-    name: "home",
-    component: HomeView,
+    name: "join",
+    component: function () {
+      return import("../views/JoinView.vue");
+    },
+    meta: { authRequired: true },
+    props: true,
   },
   {
-    path: "/about",
-    name: "about",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
+    path: "/chat/:roomId",
+    name: "chat",
     component: function () {
-      return import(/* webpackChunkName: "about" */ "../views/AboutView.vue");
+      return import("../views/ChatView.vue");
+    },
+    props: true,
+  },
+
+  {
+    path: "/login",
+    name: "login",
+    component: function () {
+      return import("../views/LoginView.vue");
     },
   },
 ];
@@ -22,6 +31,23 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach(function (to, from, next) {
+  if (
+    to.matched.some(function (routeInfo) {
+      return routeInfo.meta.authRequired;
+    })
+  ) {
+    let isAuth = localStorage.getItem("token");
+    if (isAuth) {
+      next(); // 페이지 전환
+    } else {
+      next("/login");
+    }
+  } else {
+    next(); // 페이지 전환
+  }
 });
 
 export default router;
