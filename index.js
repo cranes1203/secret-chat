@@ -47,7 +47,7 @@ io.on('connection', (socket) => {
     let token = data.token;
     let ress;
     try {
-      await fetch(`http://${VUE_APP_LARAVEL_IP}:${VUE_APP_LARAVEL_PORT}/api/auth/me`, {
+      await fetch(`http://192.168.0.5:8000/api/auth/me`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -74,7 +74,7 @@ io.on('connection', (socket) => {
         'created_at': times.format('YYYY-MM-DD HH:mm:ss')
       }
       io.to(socket.roomId).emit('chat', returnData);
-      await fetch(`http://${VUE_APP_LARAVEL_IP}:${VUE_APP_LARAVEL_PORT}/api/msgSave`, {
+      await fetch(`http://192.168.0.5:8000/api/msgSave`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
